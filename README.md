@@ -1,16 +1,9 @@
 # trex
 
-A new Flutter project.
+T-Rex runner!
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Copied from the genius's at FLAME - https://github.com/flame-engine/flame/tree/main/examples/games/trex
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This code is adapted as part of a demo for FlutterCon USA 2025
