@@ -1,4 +1,3 @@
-import 'dart:js_interop';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -34,7 +33,7 @@ class TRexGame extends FlameGame
   late final horizon = Horizon();
   late final gameOverPanel = GameOverPanel();
   late final TextComponent scoreText;
-  final gamepadController = GamepadController();
+  late final gamepadController;
 
   int _score = 0;
   int _highScore = 0;
@@ -51,6 +50,7 @@ class TRexGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    gamepadController = GamepadController(onAction);
     // set up listeners for gamepad connection events
     web.window.addEventListener(
       'gamepadconnected',
@@ -59,6 +59,10 @@ class TRexGame extends FlameGame
     web.window.addEventListener(
       'gamepaddisconnected',
       gamepadController.onDisconnectJS,
+    );
+    web.window.addEventListener(
+      'buttonPressed',
+      gamepadController.onActionJS,
     );
 
     spriteImage = await Flame.images.load('trex.png');
@@ -174,6 +178,10 @@ class TRexGame extends FlameGame
     web.window.removeEventListener(
       'gamepaddisconnected',
       gamepadController.onDisconnectJS,
+    );
+    web.window.removeEventListener(
+      'buttonPressed',
+      gamepadController.onActionJS,
     );
   }
 }
