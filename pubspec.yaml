@@ -15,6 +15,7 @@ dependencies:
   flame: ^1.29.0
   flutter:
     sdk: flutter
+  web: ^1.1.1
 
 dev_dependencies:
   flame_lint: ^1.4.0

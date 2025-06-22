@@ -10,7 +10,9 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:trex/background/horizon.dart';
 import 'package:trex/game_over.dart';
+import 'package:trex/gamepad/gamepad_controller.dart';
 import 'package:trex/player.dart';
+import 'package:web/web.dart' as web;
 
 enum GameState { playing, intro, gameOver }
 
@@ -31,6 +33,7 @@ class TRexGame extends FlameGame
   late final horizon = Horizon();
   late final gameOverPanel = GameOverPanel();
   late final TextComponent scoreText;
+  late final gamepadController;
 
   int _score = 0;
   int _highScore = 0;
@@ -47,6 +50,29 @@ class TRexGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    // gamepad controller setup
+    gamepadController = GamepadController(onAction);
+
+    // set up listeners for gamepad connection events
+    // note that a "connection" also means that the
+    // controller is awake - this doesn't fire just by
+    // plugging it in
+    web.window.addEventListener(
+      'gamepadconnected',
+      gamepadController.updateJS,
+    );
+    web.window.addEventListener(
+      'gamepaddisconnected',
+      gamepadController.onDisconnectJS,
+    );
+
+    // this is a custom event we created in our game
+    // controller to detect button presses
+    web.window.addEventListener(
+      'buttonPressed',
+      gamepadController.onActionJS,
+    );
+
     spriteImage = await Flame.images.load('trex.png');
     add(horizon);
     add(player);
@@ -148,5 +174,23 @@ class TRexGame extends FlameGame
         currentSpeed += acceleration * dt;
       }
     }
+  }
+
+  // clean up all of our gamepad events
+  @override
+  void onDispose() {
+    super.onDispose();
+    web.window.removeEventListener(
+      'gamepadconnected',
+      gamepadController.updateJS,
+    );
+    web.window.removeEventListener(
+      'gamepaddisconnected',
+      gamepadController.onDisconnectJS,
+    );
+    web.window.removeEventListener(
+      'buttonPressed',
+      gamepadController.onActionJS,
+    );
   }
 }
