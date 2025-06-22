@@ -50,8 +50,13 @@ class TRexGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    // gamepad controller setup
     gamepadController = GamepadController(onAction);
+
     // set up listeners for gamepad connection events
+    // note that a "connection" also means that the
+    // controller is awake - this doesn't fire just by
+    // plugging it in
     web.window.addEventListener(
       'gamepadconnected',
       gamepadController.updateJS,
@@ -60,6 +65,9 @@ class TRexGame extends FlameGame
       'gamepaddisconnected',
       gamepadController.onDisconnectJS,
     );
+
+    // this is a custom event we created in our game
+    // controller to detect button presses
     web.window.addEventListener(
       'buttonPressed',
       gamepadController.onActionJS,
@@ -168,6 +176,7 @@ class TRexGame extends FlameGame
     }
   }
 
+  // clean up all of our gamepad events
   @override
   void onDispose() {
     super.onDispose();

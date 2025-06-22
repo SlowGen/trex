@@ -3,20 +3,24 @@ import 'dart:js_interop';
 import 'package:web/web.dart' as web;
 
 class GamepadController {
+  GamepadController(void Function() this.onAction) {
+    _populateGamepads();
+    web.window.requestAnimationFrame(_gameLoop.toJS);
+  }
+
+  // this is the action event called in the main game
   final void Function() onAction;
+
   // the base state in the browser is always 4 null slots
   List<web.Gamepad?> availableGamepads = [null, null, null, null];
   web.Gamepad? currentGamepad;
   bool get hasGamepad => availableGamepads.any((element) => element != null);
 
+  // these getters allow our functions to be called as
+  // JS when needed
   JSFunction get updateJS => update.toJS;
   JSFunction get onDisconnectJS => onDisconnect.toJS;
   JSFunction get onActionJS => onAction.toJS;
-
-  GamepadController(void Function() this.onAction) {
-    _populateGamepads();
-    web.window.requestAnimationFrame(_gameLoop.toJS);
-  }
 
   final web.Event buttonPressedEvent = web.Event('buttonPressed');
 
